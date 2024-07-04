@@ -21,13 +21,13 @@
 ## Branchs
 
 <p>
-    <strong>feature/c#-adonet</strong> (Se utiliza do ADO.NET com C# para conectar e manipular um Banco de Dados SQLite)
+    `feature/c#-adonet` (Se utiliza do ADO.NET com C# para conectar e manipular um Banco de Dados SQLite)
     <br />
 
-    <strong>feature/c#-dapper</strong> (Se utiliza do Dapper com C# para conectar e manipular um Banco de Dados SQLite)
+    `feature/c#-dapper` (Se utiliza do Dapper com C# para conectar e manipular um Banco de Dados SQLite)
     <br />
 
-    <strong>feature/c#-entityframework</strong> (Se utiliza do Entity Framework com C# para conectar e manipular um Banco de Dados SQLite)
+    `feature/c#-entityframework` (Se utiliza do Entity Framework com C# para conectar e manipular um Banco de Dados SQLite)
     <br />
 </p>
 
