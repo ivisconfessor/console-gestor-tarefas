@@ -10,7 +10,7 @@
 
 <p>
     Projeto Console .NET Framework com intuito de demonstrar o acesso a uma base de dados relacional (SQLite), utilizando a linguagem de programação C#.
-    O Projeto foi desenvolvido durante os vídeos da playlist ACESSO A BANCO DE DADOS COM C# no Canal do YouTube - <strong><a href="https://youtube.com/artigotech?sub_confirmation=1">Artigo Tech</a></strong>.
+    O Projeto foi desenvolvido durante os vídeos da playlist ACESSO A BANCO DE DADOS COM C# no Canal do YouTube - <strong><a href="https://www.youtube.com/playlist?list=PLzomD1iIig0TIVVYlSj9_q8hQpsTWK0FK">Artigo Tech</a></strong>.
     <br />
 </p>
 
