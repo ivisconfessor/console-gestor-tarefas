@@ -1,8 +1,10 @@
 ﻿using ArtigoTech.GestorTarefas.App.Interfaces;
 using ArtigoTech.GestorTarefas.App.Models;
+using Dapper;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Linq;
 
 namespace ArtigoTech.GestorTarefas.App.DataAccess
 {
@@ -13,14 +15,8 @@ namespace ArtigoTech.GestorTarefas.App.DataAccess
             using (var connection = Database.GetConnection())
             {
                 connection.Open();
-
                 string sql = "INSERT INTO TAREFAS (Nome, Descricao) VALUES (@Nome, @Descricao)";
-                using (var cmd = new SQLiteCommand(sql, connection))
-                {
-                    cmd.Parameters.AddWithValue("@Nome", tarefa.Nome);
-                    cmd.Parameters.AddWithValue("@Descricao", tarefa.Descricao);
-                    cmd.ExecuteNonQuery();
-                }
+                connection.Execute(sql, tarefa);
             }
         }
 
@@ -31,26 +27,13 @@ namespace ArtigoTech.GestorTarefas.App.DataAccess
             using (var connection = Database.GetConnection())
             {
                 connection.Open();
-
                 string sql = "SELECT * FROM TAREFAS";
-                using (var cmd = new SQLiteCommand(sql, connection))
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        var tarefa = new Tarefa
-                        {
-                            Id = Convert.ToInt32(reader["Id"]),
-                            Nome = reader["Nome"].ToString(),
-                            Descricao = reader["Descricao"].ToString(),
-                            DataCriacao = Convert.ToDateTime(reader["DataCriacao"]).ToLocalTime()
-                        };
-                        tarefas.Add(tarefa);
-                    }
-                }
-            }
+                tarefas = connection.Query<Tarefa>(sql).ToList();
 
-            return tarefas;
+                tarefas.ForEach(t => t.DataCriacao = t.DataCriacao.ToLocalTime());
+
+                return tarefas;
+            }
         }
 
         public Tarefa ObterTarefaPorId(int id)
@@ -58,29 +41,15 @@ namespace ArtigoTech.GestorTarefas.App.DataAccess
             using (var connection = Database.GetConnection())
             {
                 connection.Open();
-
                 string sql = "SELECT * FROM TAREFAS WHERE Id = @Id";
-                using (var cmd = new SQLiteCommand(sql, connection))
+                var tarefa = connection.QuerySingleOrDefault<Tarefa>(sql, new { Id = id });
+            
+                if (tarefa != null)
                 {
-                    cmd.Parameters.AddWithValue("@Id", id);
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            return new Tarefa
-                            {
-                                Id = Convert.ToInt32(reader["Id"]),
-                                Nome = reader["Nome"].ToString(),
-                                Descricao = reader["Descricao"].ToString(),
-                                DataCriacao = Convert.ToDateTime(reader["DataCriacao"]).ToLocalTime()
-                            };
-                        }
-                        else
-                        {
-                            return null;
-                        }
-                    }
+                    tarefa.DataCriacao = tarefa.DataCriacao.ToLocalTime();
                 }
+
+                return tarefa;
             }
         }
 
@@ -89,15 +58,8 @@ namespace ArtigoTech.GestorTarefas.App.DataAccess
             using (var connection = Database.GetConnection())
             {
                 connection.Open();
-
                 string sql = "UPDATE TAREFAS SET Nome = @Nome, Descricao = @Descricao WHERE Id = @Id";
-                using (var cmd = new SQLiteCommand(sql, connection))
-                {
-                    cmd.Parameters.AddWithValue("@Nome", tarefa.Nome);
-                    cmd.Parameters.AddWithValue("@Descricao", tarefa.Descricao);
-                    cmd.Parameters.AddWithValue("@Id", tarefa.Id);
-                    cmd.ExecuteNonQuery();
-                }
+                connection.Execute(sql, tarefa);
             }
         }
 
@@ -106,13 +68,8 @@ namespace ArtigoTech.GestorTarefas.App.DataAccess
             using (var connection = Database.GetConnection())
             {
                 connection.Open();
-
                 string sql = "DELETE FROM TAREFAS WHERE Id = @Id";
-                using (var cmd = new SQLiteCommand(sql, connection))
-                {
-                    cmd.Parameters.AddWithValue("@Id", id);
-                    cmd.ExecuteNonQuery();
-                }
+                connection.Execute(sql, new { Id = id });
             }
         }
     }

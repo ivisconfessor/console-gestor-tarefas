@@ -1,4 +1,5 @@
-﻿using System.Data.SQLite;
+﻿using Dapper;
+using System.Data.SQLite;
 
 namespace ArtigoTech.GestorTarefas.App.DataAccess
 {
@@ -23,10 +24,8 @@ namespace ArtigoTech.GestorTarefas.App.DataAccess
                         Descricao TEXT,
                         DataCriacao DATETIME DEFAULT CURRENT_TIMESTAMP
                     )";
-                using (var cmd = new SQLiteCommand(sql, connection))
-                {
-                    cmd.ExecuteNonQuery();
-                }
+
+                connection.Execute(sql);
             }
         }
     }

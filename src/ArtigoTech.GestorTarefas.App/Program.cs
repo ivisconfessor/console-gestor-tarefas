@@ -127,7 +127,7 @@ namespace ArtigoTech.GestorTarefas.App
 
             dao.AtualizarTarefa(tarefaExistente);
 
-            Console.WriteLine($"\u001b[32;1mTarefa [{tarefaExistente.Nome}] atualizada com sucesso.\u001b[0m");
+            Console.WriteLine($"\u001b[32;1mA Tarefa com ID [{tarefaExistente.Id}] foi atualizada com sucesso.\u001b[0m");
             Console.WriteLine();
 
             VoltarParaMenuTarefas();
