@@ -27,9 +27,7 @@ namespace ArtigoTech.GestorTarefas.App
                         FecharAplicacao();
                         return;
                     default:
-                        Console.WriteLine("\u001b[31;1mOpção inválida. Pressione qualquer tecla para voltar ao menu principal...\u001b[0m");
-                        Console.ReadKey();
-                        Console.Clear();
+                        EscreverMensagemOpcaoInvalida();
                         break;
                 }
             }
@@ -37,11 +35,7 @@ namespace ArtigoTech.GestorTarefas.App
 
         static void AdicionarTarefa(TarefaDAO dao)
         {
-            Console.WriteLine();
-
-            Console.BackgroundColor = ConsoleColor.DarkCyan;
-            Console.WriteLine("\u001b[33;1m>>> Adicionar Nova Tarefa\u001b[0m");
-            Console.WriteLine("===============================");
+            EscreverTitulo("Adicionar Nova Tarefa");
 
             Console.Write("Nome da tarefa (ou 'V' para voltar): ");
             var nome = Console.ReadLine();
@@ -59,24 +53,18 @@ namespace ArtigoTech.GestorTarefas.App
             };
             dao.AdicionarTarefa(tarefa);
 
-            Console.WriteLine($"\u001b[32;1mTarefa [{tarefa.Nome}] adicionada com sucesso.\u001b[0m");
-            Console.WriteLine();
-
+            EscreverMensagemAviso($"Tarefa [{tarefa.Nome}] adicionada com sucesso!");
             VoltarParaMenuTarefas();
         }
 
         static void ListarTarefas(TarefaDAO dao)
         {
-            Console.WriteLine();
-
-            Console.BackgroundColor = ConsoleColor.DarkCyan;
-            Console.WriteLine("\u001b[33;1m>>> Listagem de Tarefas\u001b[0m");
-            Console.WriteLine("===============================");
+            EscreverTitulo("Listagem de Tarefas");
 
             var tarefas = dao.ObterTarefas();
             if (tarefas.Count == 0)
             {
-                Console.WriteLine("Nenhuma tarefa encontrada.");
+                EscreverMensagemAviso("Nenhuma tarefa encontrada!");
             }
             else
             {
@@ -86,19 +74,13 @@ namespace ArtigoTech.GestorTarefas.App
                 }
             }
 
-            Console.WriteLine();
-
             VoltarParaMenuTarefas();
         }
 
         static void AtualizarTarefa(TarefaDAO dao)
         {
-            Console.WriteLine();
-
-            Console.BackgroundColor = ConsoleColor.DarkCyan;
-            Console.WriteLine("\u001b[33;1m>>> Atualizar Tarefa\u001b[0m");
-            Console.WriteLine("===============================");
-
+            EscreverTitulo("Atualizar Tarefa");
+            
             int id = LerIdTarefa();
             if (id == -1)
             {
@@ -108,8 +90,7 @@ namespace ArtigoTech.GestorTarefas.App
             var tarefaExistente = dao.ObterTarefaPorId(id);
             if (tarefaExistente == null)
             {
-                Console.WriteLine($"\u001b[31;1mTarefa com ID {id} não encontrada.\u001b[0m");
-                Console.WriteLine();
+                EscreverMensagemAviso($"Tarefa com ID {id} não encontrada");
                 VoltarParaMenuTarefas();
                 return;
             }
@@ -127,48 +108,38 @@ namespace ArtigoTech.GestorTarefas.App
 
             dao.AtualizarTarefa(tarefaExistente);
 
-            Console.WriteLine($"\u001b[32;1mTarefa [{tarefaExistente.Nome}] atualizada com sucesso.\u001b[0m");
-            Console.WriteLine();
-
+            EscreverMensagemAviso($"Tarefa [{tarefaExistente.Nome}] atualizada com sucesso.");
             VoltarParaMenuTarefas();
         }
 
         static void DeletarTarefa(TarefaDAO dao)
         {
-            Console.WriteLine();
-
-            Console.BackgroundColor = ConsoleColor.DarkCyan;
-            Console.WriteLine("\u001b[33;1m>>> Deletar Tarefa\u001b[0m");
-            Console.WriteLine("===============================");
+            EscreverTitulo("Deletar Tarefa");
 
             int id = LerIdTarefa();
             if (id == -1)
-            {
                 return;
-            }
 
             var tarefaExistente = dao.ObterTarefaPorId(id);
             if (tarefaExistente == null)
             {
-                Console.WriteLine($"\u001b[31;1mTarefa com ID {id} não encontrada.\u001b[0m");
-                Console.WriteLine();
+                EscreverMensagemAviso($"Tarefa com ID {id} não encontrada!");
                 VoltarParaMenuTarefas();
                 return;
             }
 
-            Console.Write($"\u001b[31;1mTem certeza que deseja deletar a tarefa [{tarefaExistente.Nome}]? (S/N): \u001b[0m");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write($">>> Tem certeza que deseja deletar a tarefa [{tarefaExistente.Nome}]? (S/N): ");
             var confirmacao = Console.ReadLine();
             if (confirmacao.ToLower() == "s")
             {
                 dao.DeletarTarefa(id);
-                Console.WriteLine("\u001b[31;1mTarefa deletada com sucesso.\u001b[0m");
+                EscreverMensagemAviso("Tarefa deletada com sucesso!");
             }
             else
             {
-                Console.WriteLine("Operação cancelada.");
+                EscreverMensagemAviso("Operação cancelada!");
             }
-
-            Console.WriteLine();
 
             VoltarParaMenuTarefas();
         }
@@ -203,9 +174,7 @@ namespace ArtigoTech.GestorTarefas.App
                         FecharAplicacao();
                         return;
                     default:
-                        Console.WriteLine("\u001b[31;1mOpção inválida. Pressione qualquer tecla para voltar ao menu de tarefas...\u001b[0m");
-                        Console.ReadKey();
-                        Console.Clear();
+                        EscreverMensagemOpcaoInvalida();
                         break;
                 }
             }
@@ -213,9 +182,11 @@ namespace ArtigoTech.GestorTarefas.App
 
         static void MostrarMenuPrincipal()
         {
-            Console.WriteLine("\u001b[33;1m===============================\u001b[0m");
-            Console.WriteLine("\u001b[33;1mGestão de Tarefas - Menu Principal\u001b[0m");
-            Console.WriteLine("\u001b[33;1m===============================\u001b[0m");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("==================================");
+            Console.WriteLine("Gestão de Tarefas - Menu Principal");
+            Console.WriteLine("==================================");
+            Console.ResetColor();
             Console.WriteLine("1. Gerenciar Tarefas");
             Console.WriteLine("2. Sair");
             Console.Write("Escolha uma opção: ");
@@ -224,7 +195,9 @@ namespace ArtigoTech.GestorTarefas.App
         static void MostrarMenuTarefas()
         {
             Console.BackgroundColor = ConsoleColor.DarkYellow;
-            Console.WriteLine("\u001b[33;1m>>> Menu de Tarefas <<<\u001b[0m");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine(">>> Menu de Tarefas <<<");
+            Console.ResetColor();
             Console.WriteLine("===============================");
             Console.WriteLine("1. Adicionar Tarefa");
             Console.WriteLine("2. Listar Tarefas");
@@ -255,8 +228,8 @@ namespace ArtigoTech.GestorTarefas.App
                 }
                 else
                 {
+                    EscreverMensagemAviso("Por favor, digite um ID válido.");
                     Console.WriteLine();
-                    Console.WriteLine("\u001b[31;1mPor favor, digite um número válido.\u001b[0m");
                 }
             }
         }
@@ -264,13 +237,14 @@ namespace ArtigoTech.GestorTarefas.App
         static void FecharAplicacao()
         {
             Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Yellow;
 
-            Console.WriteLine("\u001b[33;1m>>> Fechando a aplicação em 5 segundos...\u001b[0m");
+            Console.WriteLine(">>> Fechando a aplicação em 5 segundos...");
             Console.WriteLine("===============================");
 
             for (int i = 5; i > 0; i--)
             {
-                Console.WriteLine($"\u001b[33;1mFechando em {i}...\u001b[0m");
+                Console.WriteLine($"Fechando em {i}...");
                 Thread.Sleep(1000);
             }
 
@@ -279,8 +253,34 @@ namespace ArtigoTech.GestorTarefas.App
 
         static void VoltarParaMenuTarefas()
         {
+            Console.WriteLine();
             Console.WriteLine($"Pressione qualquer tecla para voltar ao menu de tarefas...");
             Console.ReadKey();
+        }
+
+        static void EscreverTitulo(string texto)
+        {
+            Console.WriteLine();
+            Console.BackgroundColor = ConsoleColor.DarkCyan;
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine(">>> " + texto);
+            Console.ResetColor();
+            Console.WriteLine("===============================");
+        }
+
+        static void EscreverMensagemAviso(string texto)
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(">>> " + texto);
+            Console.ResetColor();
+        }
+
+        static void EscreverMensagemOpcaoInvalida()
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(">>> Opção inválida! Pressione qualquer tecla para voltar...");
+            Console.ReadKey();
+            Console.Clear();
         }
     }
 }
