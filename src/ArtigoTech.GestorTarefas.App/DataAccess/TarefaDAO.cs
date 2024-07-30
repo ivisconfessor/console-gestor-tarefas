@@ -1,119 +1,53 @@
 ﻿using ArtigoTech.GestorTarefas.App.Interfaces;
 using ArtigoTech.GestorTarefas.App.Models;
+
 using System;
 using System.Collections.Generic;
-using System.Data.SQLite;
+using System.Linq;
 
 namespace ArtigoTech.GestorTarefas.App.DataAccess
 {
     public class TarefaDAO : ITarefaDAO
     {
+        private readonly DatabaseContext _databaseContext;
+
+        public TarefaDAO()
+        {
+            _databaseContext = new DatabaseContext();
+        }
+
         public void AdicionarTarefa(Tarefa tarefa)
         {
-            using (var connection = Database.GetConnection())
-            {
-                connection.Open();
-
-                string sql = "INSERT INTO TAREFAS (Nome, Descricao) VALUES (@Nome, @Descricao)";
-                using (var cmd = new SQLiteCommand(sql, connection))
-                {
-                    cmd.Parameters.AddWithValue("@Nome", tarefa.Nome);
-                    cmd.Parameters.AddWithValue("@Descricao", tarefa.Descricao);
-                    cmd.ExecuteNonQuery();
-                }
-            }
+            tarefa.DataCriacao = DateTime.Now;
+            _databaseContext.Tarefas.Add(tarefa);
+            _databaseContext.SaveChanges();
         }
 
         public List<Tarefa> ObterTarefas()
         {
-            var tarefas = new List<Tarefa>();
-
-            using (var connection = Database.GetConnection())
-            {
-                connection.Open();
-
-                string sql = "SELECT * FROM TAREFAS";
-                using (var cmd = new SQLiteCommand(sql, connection))
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        var tarefa = new Tarefa
-                        {
-                            Id = Convert.ToInt32(reader["Id"]),
-                            Nome = reader["Nome"].ToString(),
-                            Descricao = reader["Descricao"].ToString(),
-                            DataCriacao = Convert.ToDateTime(reader["DataCriacao"]).ToLocalTime()
-                        };
-                        tarefas.Add(tarefa);
-                    }
-                }
-            }
-
+            var tarefas = _databaseContext.Tarefas.ToList();
             return tarefas;
         }
 
         public Tarefa ObterTarefaPorId(int id)
         {
-            using (var connection = Database.GetConnection())
-            {
-                connection.Open();
-
-                string sql = "SELECT * FROM TAREFAS WHERE Id = @Id";
-                using (var cmd = new SQLiteCommand(sql, connection))
-                {
-                    cmd.Parameters.AddWithValue("@Id", id);
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            return new Tarefa
-                            {
-                                Id = Convert.ToInt32(reader["Id"]),
-                                Nome = reader["Nome"].ToString(),
-                                Descricao = reader["Descricao"].ToString(),
-                                DataCriacao = Convert.ToDateTime(reader["DataCriacao"]).ToLocalTime()
-                            };
-                        }
-                        else
-                        {
-                            return null;
-                        }
-                    }
-                }
-            }
+            var tarefa = _databaseContext.Tarefas.FirstOrDefault(t => t.Id == id);
+            return tarefa;
         }
 
         public void AtualizarTarefa(Tarefa tarefa)
         {
-            using (var connection = Database.GetConnection())
-            {
-                connection.Open();
-
-                string sql = "UPDATE TAREFAS SET Nome = @Nome, Descricao = @Descricao WHERE Id = @Id";
-                using (var cmd = new SQLiteCommand(sql, connection))
-                {
-                    cmd.Parameters.AddWithValue("@Nome", tarefa.Nome);
-                    cmd.Parameters.AddWithValue("@Descricao", tarefa.Descricao);
-                    cmd.Parameters.AddWithValue("@Id", tarefa.Id);
-                    cmd.ExecuteNonQuery();
-                }
-            }
+            var tarefaAtualizar = _databaseContext.Tarefas.FirstOrDefault(t=> t.Id == tarefa.Id);
+            tarefaAtualizar.Nome = tarefa.Nome;
+            tarefaAtualizar.Descricao = tarefa.Descricao;
+            _databaseContext.SaveChanges();
         }
 
         public void DeletarTarefa(int id)
         {
-            using (var connection = Database.GetConnection())
-            {
-                connection.Open();
-
-                string sql = "DELETE FROM TAREFAS WHERE Id = @Id";
-                using (var cmd = new SQLiteCommand(sql, connection))
-                {
-                    cmd.Parameters.AddWithValue("@Id", id);
-                    cmd.ExecuteNonQuery();
-                }
-            }
+            var tarefaDeletar = _databaseContext.Tarefas.FirstOrDefault(t => t.Id == id);
+            _databaseContext.Tarefas.Remove(tarefaDeletar);
+            _databaseContext.SaveChanges();
         }
     }
 }

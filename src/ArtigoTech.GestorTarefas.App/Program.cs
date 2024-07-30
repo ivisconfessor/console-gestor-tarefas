@@ -9,8 +9,6 @@ namespace ArtigoTech.GestorTarefas.App
     {
         static void Main(string[] args)
         {
-            Database.CriarTabelaTarefas(); // Cria a tabela se não existir
-
             var dao = new TarefaDAO();
             while (true)
             {

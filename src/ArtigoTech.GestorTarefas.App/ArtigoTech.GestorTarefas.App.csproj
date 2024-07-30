@@ -63,7 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataAccess\TarefaDAO.cs" />
-    <Compile Include="DataAccess\Database.cs" />
+    <Compile Include="DataAccess\DatabaseContext.cs" />
     <Compile Include="Interfaces\ITarefaDAO.cs" />
     <Compile Include="Models\Tarefa.cs" />
     <Compile Include="Program.cs" />
